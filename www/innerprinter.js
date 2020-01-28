@@ -53,6 +53,9 @@ module.exports = {
   printOriginalText: function (text, resolve, reject) {
     exec(resolve, reject, "Printer", "printOriginalText", [text]);
   },
+  cutPaper : function (text, resolve, reject) {
+    exec(resolve, reject, "Printer", "cutPaper", [text]);
+  },
   printString: function (text, resolve, reject) {
     exec(resolve, reject, "Printer", "printString", [text]);
   },

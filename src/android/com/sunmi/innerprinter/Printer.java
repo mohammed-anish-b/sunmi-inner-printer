@@ -150,6 +150,9 @@ public class Printer extends CordovaPlugin {
     } else if (action.equals("printerStatusStopListener")) {
       printerStatusStopListener();
       return true;
+    } else if (action.equals("cutPaper")) {
+      cutPaper(callbackContext);
+      return true;
     }
 
     return false;
@@ -737,6 +740,41 @@ public class Printer extends CordovaPlugin {
       }
     });
   }
+
+  public void cutPaper(final CallbackContext callbackContext) {
+    final IWoyouService printerService = woyouService;
+    ThreadPoolManager.getInstance().executeTask(new Runnable() {
+      @Override
+      public void run() {
+        try {
+          printerService.cutPaper(new ICallback.Stub() {
+            @Override
+            public void onRunResult(boolean isSuccess) {
+              if (isSuccess) {
+                callbackContext.success("");
+              } else {
+                callbackContext.error(isSuccess + "");
+              }
+            }
+
+            @Override
+            public void onReturnString(String result) {
+              callbackContext.success(result);
+            }
+
+            @Override
+            public void onRaiseException(int code, String msg) {
+              callbackContext.error(msg);
+            }
+          });
+        } catch (Exception e) {
+          e.printStackTrace();
+          Log.i(TAG, "ERROR: " + e.getMessage());
+          callbackContext.error(e.getMessage());
+        }
+      }
+    });
+  }	
 
   public void commitPrinterBuffer() {
     final IWoyouService printerService = woyouService;
